@@ -1,5 +1,5 @@
 import { Query, Resolver, Mutation, Arg } from 'type-graphql'
-import { Todo, CreateTodo } from '../schemas/Todo'
+import { Todo, CreateTodo, DeleteTodo, UpdateTodo } from '../schemas/Todo'
 
 @Resolver(() => Todo)
 export class TodoResolver {
@@ -33,4 +33,43 @@ export class TodoResolver {
     this.todos.push(todo);
     return todo;
   }
+
+    // returns the deleted todo
+    @Mutation(() => Todo)
+    async delete (
+      @Arg('input') { id }: DeleteTodo
+    ): Promise<Todo> {
+      const remove = this.todos.find((target) => {
+        return target.id === id;
+      });
+
+      this.todos.splice(this.todos.indexOf(remove), 1);
+      return remove;
+    }
+
+    // returns the updated todo
+    @Mutation(() => Todo)
+    async update (
+      @Arg('input') { id, title, description, dueDate, isCompleted }: UpdateTodo
+    ): Promise<Todo> {
+      // Find the target todo
+      const todo = this.todos.find((target) => {
+        return target.id === id;
+      });
+
+      // Update the provided attributes
+      if (title) {
+        todo.title = title;
+      }
+      if (description) {
+        todo.description = description;
+      }
+      if (dueDate) {
+        todo.dueDate = dueDate;
+      }
+      if (isCompleted) {
+        todo.isCompleted = isCompleted;
+      }
+      return todo;
+    }
 }
