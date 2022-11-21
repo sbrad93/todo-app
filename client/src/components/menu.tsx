@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { TextInput, Button } from 'react-native-paper';
 
 interface IMenu {
     onAddTodo: () => void
@@ -8,21 +9,20 @@ interface IMenu {
 export default function Menu (props: IMenu) {
   return (
     <View style={styles.container}>
-      <Button 
-        title="+ Add Task" 
-        onPress={() => console.log("add todo")}/>
+        <Button  
+            mode="contained" 
+            color="#1E1A3C"
+            onPress={() => props.onAddTodo()}>
+            + Add Task
+        </Button>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
     container: {
-      width: '100%', height: 'auto',
-      color: 'black',
-      alignItems: 'center',
+      width: '100%',
       justifyContent: 'center',
-      display: 'flex',
-      flexDirection: 'row',
-      padding: 20,
+      padding: 40,
     },
   });
