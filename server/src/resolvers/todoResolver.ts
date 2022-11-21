@@ -1,24 +1,24 @@
-import { Query, Resolver, Mutation, Arg } from 'type-graphql'
-import { Todo, CreateTodo, DeleteTodo, UpdateTodo } from '../schemas/Todo'
+import { Query, Resolver, Mutation, Arg } from 'type-graphql';
+import { Todo, CreateTodo, DeleteTodo, UpdateTodo } from '../schemas/Todo';
 
 @Resolver(() => Todo)
 export class TodoResolver {
   private todos: Todo[] = [];
 
   // returns a string for the next avilable id
-  getID = (): string => {
+  private getID = (): string => {
     return (this.todos.length+1)+"";
   }
 
   // returns an array of todos
   @Query(() => [Todo])
-  async getTodos(): Promise<Todo[]> {
+  public async getTodos(): Promise<Todo[]> {
     return this.todos;
   }
 
   // returns the new todo
   @Mutation(() => Todo)
-  async create (
+  public async create (
     @Arg('input') { title, description, dueDate }: CreateTodo
   ): Promise<Todo> {
     const todo = {
@@ -36,7 +36,7 @@ export class TodoResolver {
 
     // returns the deleted todo
     @Mutation(() => Todo)
-    async delete (
+    public async delete (
       @Arg('input') { id }: DeleteTodo
     ): Promise<Todo> {
       const remove = this.todos.find((target) => {
@@ -49,7 +49,7 @@ export class TodoResolver {
 
     // returns the updated todo
     @Mutation(() => Todo)
-    async update (
+    public async update (
       @Arg('input') { id, title, description, dueDate, isCompleted }: UpdateTodo
     ): Promise<Todo> {
       // Find the target todo

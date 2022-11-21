@@ -25,10 +25,10 @@ export class Todo {
 @InputType()
 export class CreateTodo implements Partial<Todo> {
   @Field()
-  title: string
+  title: string;
 
   @Field({ nullable: true }) 
-  description?: string
+  description?: string;
 
   @Field()
   dueDate: Date;
@@ -38,7 +38,7 @@ export class CreateTodo implements Partial<Todo> {
 @InputType()
 export class DeleteTodo implements Partial<Todo> {
   @Field()
-  id: string
+  id: string;
 }
 
 // Input type for updating a todo
