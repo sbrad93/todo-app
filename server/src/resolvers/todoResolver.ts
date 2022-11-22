@@ -67,7 +67,7 @@ export class TodoResolver {
       if (dueDate) {
         todo.dueDate = dueDate;
       }
-      if (isCompleted) {
+      if (isCompleted != null) {
         todo.isCompleted = isCompleted;
       }
       return todo;

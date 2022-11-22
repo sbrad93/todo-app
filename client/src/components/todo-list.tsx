@@ -5,33 +5,42 @@ import { IconButton, List } from 'react-native-paper';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { getTodosQuery } from "../graphql/hooks/use-get-todos-query";
 import { useDeleteTodoMutation } from '../graphql/hooks/use-delete-todo-mutation';
+import { useUpdateTodoMutation } from "../graphql/hooks/use-update-todo-status-mutation";
 
 interface ITodoListProps {
   data: ITodo[] | undefined
 }
 
 const TodoList = (props: ITodoListProps) => {
-  const [isCompleted, setCompleted] = useState(false);
   const {data, loading, error, refetch} = getTodosQuery();
   const [isLoading, setLoading] = useState(true);
   const deleteTodo = useDeleteTodoMutation();
-
-
+  const updateTodoStatus = useUpdateTodoMutation();
 
   useEffect(() => {
     refetch();
     setLoading(false);
-}, []);
+  }, []);
+
+  const toggleCheck = (isChecked: boolean, id: string) => {
+    try {
+      updateTodoStatus({id: id, isCompleted: isChecked})
+        .then((response) => {
+          console.log(response);
+      });
+    } catch (err) {
+      throw (err);
+    }
+  }
   
   return (
     <FlatList 
-        style={styles.container}
         data={props.data}
         renderItem={({item}) => (
             <List.Item 
               style={styles.element}
               key={item.id}
-              title={item.title}
+              title={""}
               right={props => <IconButton 
                                 icon='close-circle-outline'
                                 onPress={() => {
@@ -47,8 +56,11 @@ const TodoList = (props: ITodoListProps) => {
               left={props => <BouncyCheckbox
                                 fillColor="black"
                                 unfillColor="#FFFFFF"
+                                text={item.title}
+                                textStyle={{color:'black'}}
                                 iconStyle={{ borderColor: "black" }}
-                                onPress={setCompleted}
+                                isChecked={item.isCompleted}
+                                onPress={(isChecked: boolean) => {toggleCheck(isChecked, item.id)}}
                             />}
               onPress={() => console.log("edit todo")}/>
           )}
@@ -59,11 +71,9 @@ const TodoList = (props: ITodoListProps) => {
 export default TodoList;
 
 const styles = StyleSheet.create({
-  container: {
-  },
   element: {
     padding: 0,
     paddingLeft: 5,
-    marginLeft: 5
+    marginLeft: 5,
   },
 });

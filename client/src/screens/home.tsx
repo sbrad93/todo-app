@@ -18,7 +18,7 @@ export default function HomeScreen() {
       setIsEditorVisible(false);
   }
 
-  const saveTodo = (data: CreateTodoVariables) => {
+  const saveTodo = () => {
     refetch();
     setIsEditorVisible(false);
   }
