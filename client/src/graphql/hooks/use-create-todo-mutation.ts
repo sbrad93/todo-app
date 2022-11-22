@@ -1,16 +1,16 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useCallback } from 'react';
-import ITodo from '../../models/todo';
+import { CreateTodoVariables } from '../typings/create-todo-variables';
 import { CREATE_TODO } from '../mutations/createTodo';
 import { GET_TODOS } from '../queries/getTodos';
 
 export const useCreateTodoMutation = () => {
-    const [createTodo] = useMutation<{newTodo: ITodo}>(CREATE_TODO, {
+    const [createTodo] = useMutation<{newTodo: CreateTodoVariables}>(CREATE_TODO, {
         refetchQueries: [GET_TODOS]
     });
 
     return useCallback(
-        ({title, description, dueDate}: ITodo) => {
+        ({title, description, dueDate}: CreateTodoVariables) => {
             return createTodo({
                 variables: {
                     title,
