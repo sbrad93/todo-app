@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ITodo from "../models/todo";
 import { TextInput, Button } from 'react-native-paper';
@@ -16,13 +16,12 @@ export default function EditTodoView (props: IEditTodoProps)  {
 
 
   const onSave = () => {
-    console.log(title);
     if (title.trim().length === 0) {
       props.onClose();
       setTitle('');
       return;
     }
-    
+
     if (props.data) {
       const newData = {
         ...props.data,
@@ -47,38 +46,37 @@ export default function EditTodoView (props: IEditTodoProps)  {
         <KeyboardAvoidingView 
             style={styles.container}
             behavior={"padding"}>
-            <Text style={styles.title}>{header}</Text>
-            <View>
-                <TextInput
-                    label={"Title"}
-                        style={styles.input}
-                        onChangeText={setTitle}
-                        value={props.data?.title}
-                        theme={{ colors: { placeholder: 'gray', 
-                                                text: 'black', 
-                                                primary: '#1E1A3C'}}}
-                />
-            </View>
-            <Button  
-                style={styles.btn}
-                mode="contained" 
-                color="#1E1A3C"
-                onPress={onSave}>
-                Save
-            </Button>
-            <Button  
-                style={[styles.btn, { marginTop: 10 }]}
-                mode="outlined" 
-                color="#1E1A3C"
-                onPress={() => props.onClose()}>
-                Cancel
-            </Button>
+        <Text style={styles.title}>{header}</Text>
+        <View>
+            <TextInput
+                label={"Title"}
+                    style={styles.input}
+                    onChangeText={setTitle}
+                    value={props.data?.title}
+                    theme={{ colors: { placeholder: 'gray', 
+                                            text: 'black', 
+                                            primary: '#1E1A3C'}}}
+            />
+        </View>
+        <Button  
+            style={styles.btn}
+            mode="contained" 
+            color="#1E1A3C"
+            onPress={onSave}>
+            Save
+        </Button>
+        <Button  
+            style={[styles.btn, { marginTop: 10 }]}
+            mode="outlined" 
+            color="#1E1A3C"
+            onPress={() => props.onClose()}>
+            Cancel
+        </Button>
         </KeyboardAvoidingView>
       </ScrollView>
     </Modal>
   );
 }
-
 
 const styles = StyleSheet.create({
     modal: {
