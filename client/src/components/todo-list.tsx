@@ -4,6 +4,7 @@ import ITodo from '../models/todo';
 import { IconButton, List } from 'react-native-paper';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { getTodosQuery } from "../graphql/hooks/use-get-todos-query";
+import { useDeleteTodoMutation } from '../graphql/hooks/use-delete-todo-mutation';
 
 interface ITodoListProps {
   data: ITodo[] | undefined
@@ -13,6 +14,9 @@ const TodoList = (props: ITodoListProps) => {
   const [isCompleted, setCompleted] = useState(false);
   const {data, loading, error, refetch} = getTodosQuery();
   const [isLoading, setLoading] = useState(true);
+  const deleteTodo = useDeleteTodoMutation();
+
+
 
   useEffect(() => {
     refetch();
@@ -28,7 +32,18 @@ const TodoList = (props: ITodoListProps) => {
               style={styles.element}
               key={item.id}
               title={item.title}
-              right={props => <IconButton icon='delete'/>}
+              right={props => <IconButton 
+                                icon='close-circle-outline'
+                                onPress={() => {
+                                  try{
+                                    console.log(item.id)
+                                    deleteTodo({
+                                      id: item.id
+                                    })
+                                  } catch(err) {
+                                    throw (err);
+                                  }
+                                }}/>}
               left={props => <BouncyCheckbox
                                 fillColor="black"
                                 unfillColor="#FFFFFF"
@@ -48,6 +63,7 @@ const styles = StyleSheet.create({
   },
   element: {
     padding: 0,
-    paddingLeft: 10
-  }
+    paddingLeft: 5,
+    marginLeft: 5
+  },
 });

@@ -3,11 +3,10 @@ import { StyleSheet, View, Text } from 'react-native';
 import { Caption } from 'react-native-paper';
 import Menu from '../components/menu';
 import TodoList from '../components/todo-list';
-import ITodo from '../models/todo';
 import EditTodoView from '../screens/edit-todo';
 import { getTodosQuery } from "../graphql/hooks/use-get-todos-query";
+import { CreateTodoVariables } from "../graphql/typings/create-todo-variables";
 export default function HomeScreen() {
-  const [todos, setTodos] = useState<ITodo[]>([]);
   const [isEditTodoVisible, setIsEditorVisible] = useState(false);
   const {data, loading, error, refetch} = getTodosQuery();
 
@@ -19,8 +18,7 @@ export default function HomeScreen() {
       setIsEditorVisible(false);
   }
 
-  const saveTodo = (data: ITodo) => {
-    setTodos((d) => [...d, data]);
+  const saveTodo = (data: CreateTodoVariables) => {
     refetch();
     setIsEditorVisible(false);
   }
@@ -49,7 +47,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       padding: 10,
       paddingBottom: 0,
-      marginBottom: 10,
+      marginBottom: 15,
       color: '#1E1A3C',
       textAlign: 'center'
     },

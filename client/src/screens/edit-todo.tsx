@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react"
-import { Modal, StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { Modal, StyleSheet, View, Text, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ITodo from "../models/todo";
 import { TextInput, Button } from 'react-native-paper';
-import { useCreateTodoMutation } from "../graphql/hooks/use-create-todo-hook";
+import { useCreateTodoMutation } from "../graphql/hooks/use-create-todo-mutation";
+import { CreateTodoVariables } from "../graphql/typings/create-todo-variables";
 
 interface IEditTodoProps {
   isVisible: boolean
   onClose: () => void
-  onSave: (data: ITodo) => void
+  onSave: (data: CreateTodoVariables) => void
   data?: ITodo
 }
 
@@ -31,11 +32,9 @@ export default function EditTodoView (props: IEditTodoProps)  {
       props.onSave(newData);
     } else {                                            // create new todo
       const newData = {
-        id: "", // not passed to server
         title,
         description: "",
         dueDate: new Date()+"", // need to change
-        isCompleted: false
       }
 
       try {
@@ -45,7 +44,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
           props.onSave(newData);
         });
       } catch (err) {
-        console.log(err);
+        throw (err);
       }
     }
   }
