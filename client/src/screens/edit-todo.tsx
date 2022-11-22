@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Modal, StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ITodo from "../models/todo";
 import { TextInput, Button } from 'react-native-paper';
+import { useCreateTodoMutation } from "../graphql/hooks/use-create-todo-hook";
 
 interface IEditTodoProps {
   isVisible: boolean
@@ -11,9 +12,9 @@ interface IEditTodoProps {
 }
 
 export default function EditTodoView (props: IEditTodoProps)  {
-  const header = props.data ? 'Edit Todo' : 'Add Todo'
-  const [title, setTitle] = useState(props.data?.title || '')
-
+  const header = props.data ? 'Edit Task' : 'Add Task';
+  const [title, setTitle] = useState(props.data?.title || '');
+  const createTodo = useCreateTodoMutation();
 
   const onSave = () => {
     if (title.trim().length === 0) {
@@ -22,19 +23,30 @@ export default function EditTodoView (props: IEditTodoProps)  {
       return;
     }
 
-    if (props.data) {
+    if (props.data) {                                   // update todo
       const newData = {
         ...props.data,
         title
       }
       props.onSave(newData);
-    } else {
+    } else {                                            // create new todo
       const newData = {
-        id: Math.floor(Math.random() * 10000000)+"",
+        id: "", // not passed to server
         title,
-        isCompleted: false,
+        description: "",
+        dueDate: new Date()+"", // need to change
+        isCompleted: false
       }
-      props.onSave(newData);
+
+      try {
+        createTodo(newData)
+        .then((response) => {
+          console.log(response);
+          props.onSave(newData);
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 
@@ -90,13 +102,13 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
     },
     title: {
-        fontSize: 24,
+        fontSize: 25,
         fontWeight: 'bold',
         padding: 20,
         paddingBottom: 0,
-        marginTop: 50,
+        marginTop: 55,
         marginBottom: 10,
-        color: '#1E1A3C'
+        color: '#1E1A3C',
     },
     btn: {
       margin: 50,

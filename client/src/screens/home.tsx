@@ -21,6 +21,7 @@ export default function HomeScreen() {
 
   const saveTodo = (data: ITodo) => {
     setTodos((d) => [...d, data]);
+    refetch();
     setIsEditorVisible(false);
   }
 
@@ -44,11 +45,12 @@ const styles = StyleSheet.create({
       height: '100%',
     },
     title: {
-      fontSize: 24,
+      fontSize: 25,
       fontWeight: 'bold',
-      padding: 20,
+      padding: 10,
       paddingBottom: 0,
       marginBottom: 10,
-      color: '#1E1A3C'
+      color: '#1E1A3C',
+      textAlign: 'center'
     },
   });

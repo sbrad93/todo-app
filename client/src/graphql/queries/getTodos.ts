@@ -5,7 +5,9 @@ query GetTodos {
   getTodos {
     id,
     title,
+    description,
+    dueDate,
     isCompleted,
+    userID
   }
-}
-`;
+}`;
