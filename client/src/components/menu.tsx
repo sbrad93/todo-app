@@ -11,7 +11,7 @@ export default function Menu (props: IMenu) {
     <View style={styles.container}>
         <Button  
             mode="contained" 
-            color="#1E1A3C"
+            color="#363478"
             onPress={() => props.onAddTodo()}>
             + Add Task
         </Button>

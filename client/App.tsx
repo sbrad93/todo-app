@@ -18,7 +18,7 @@ export default function App() {
                     component={ HomeScreen } 
                     options={() => ({
                       headerStyle: {
-                        backgroundColor: '#1E1A3C'
+                        backgroundColor: '#363478'
                       },
                     })} />
         </Stack.Navigator>

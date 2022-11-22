@@ -25,7 +25,7 @@ export default function HomeScreen() {
   return (
       <View style={styles.container}>
         <Text style={styles.title}>My Todo List</Text>
-        {!data?.getTodos.length && <Caption style={{textAlign: 'center', marginTop: 20}}>Tap '+ Add Task' to create a task</Caption>}
+        {!data?.getTodos.length && <Caption style={{textAlign: 'center'}}>Tap '+ Add Task' to create a task</Caption>}
         <TodoList data={data?.getTodos}/>
         <Menu onAddTodo={createTodo}/>
         <EditTodoView isVisible={isEditTodoVisible} 
@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
       height: '100%',
     },
     title: {
-      fontSize: 25,
+      fontSize: 27,
       fontWeight: 'bold',
       padding: 10,
       paddingBottom: 0,
-      marginBottom: 15,
-      color: '#1E1A3C',
+      marginBottom: 10,
+      color: '#363478',
       textAlign: 'center'
     },
   });

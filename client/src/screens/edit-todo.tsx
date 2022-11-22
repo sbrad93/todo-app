@@ -32,7 +32,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
   const confirmDate = (date: string | number | Date) => {
     date = new Date(date).toDateString();
     setDate(date);
-    setColor('#1E1A3C');
+    setColor('#363478');
     console.log("A date has been picked: ", date);
     hideDatePicker();
   };
@@ -91,11 +91,11 @@ export default function EditTodoView (props: IEditTodoProps)  {
                     value={props.data?.title}
                     theme={{ colors: { placeholder: 'gray', 
                                             text: 'black', 
-                                            primary: '#1E1A3C'}}}
+                                            primary: '#363478'}}}
             />
           <View style={styles.row}>
             <IconButton icon='calendar'
-                        color={'#1E1A3C'}></IconButton>
+                        color={'#363478'}></IconButton>
             <TouchableOpacity onPress={showDatePicker}>
                 <Text
                   style={styles.text}>
@@ -119,14 +119,14 @@ export default function EditTodoView (props: IEditTodoProps)  {
         <Button  
             style={styles.btn}
             mode="contained" 
-            color="#1E1A3C"
+            color="#363478"
             onPress={onSave}>
             Save
         </Button>
         <Button  
             style={[styles.btn, { marginTop: 10 }]}
             mode="outlined" 
-            color="#1E1A3C"
+            color="#363478"
             onPress={() => props.onClose()}>
             Cancel
         </Button>
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         paddingBottom: 0,
         marginTop: 55,
         marginBottom: 10,
-        color: '#1E1A3C',
+        color: '#363478',
     },
     btn: {
       margin: 50,
