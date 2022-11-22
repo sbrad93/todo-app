@@ -18,7 +18,7 @@ export class TodoResolver {
 
   // returns the new todo
   @Mutation(() => Todo)
-  public async create (
+  public async createTodo (
     @Arg('input') { title, description, dueDate }: CreateTodo
   ): Promise<Todo> {
     const todo = {
@@ -36,7 +36,7 @@ export class TodoResolver {
 
     // returns the deleted todo
     @Mutation(() => Todo)
-    public async delete (
+    public async deleteTodo (
       @Arg('input') { id }: DeleteTodo
     ): Promise<Todo> {
       const remove = this.todos.find((target) => {
@@ -49,7 +49,7 @@ export class TodoResolver {
 
     // returns the updated todo
     @Mutation(() => Todo)
-    public async update (
+    public async updateTodo (
       @Arg('input') { id, title, description, dueDate, isCompleted }: UpdateTodo
     ): Promise<Todo> {
       // Find the target todo
