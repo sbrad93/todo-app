@@ -5,7 +5,6 @@ import Menu from '../components/menu';
 import TodoList from '../components/todo-list';
 import EditTodoView from '../screens/edit-todo';
 import { getTodosQuery } from "../graphql/hooks/use-get-todos-query";
-import { CreateTodoVariables } from "../graphql/typings/create-todo-variables";
 export default function HomeScreen() {
   const [isEditTodoVisible, setIsEditorVisible] = useState(false);
   const {data, loading, error, refetch} = getTodosQuery();

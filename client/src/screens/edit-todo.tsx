@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { Modal, StyleSheet, View, Text, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { Modal, StyleSheet, View, Text, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
 import ITodo from "../models/todo";
-import { TextInput, Button } from 'react-native-paper';
+import { TextInput, Button, IconButton } from 'react-native-paper';
 import { useCreateTodoMutation } from "../graphql/hooks/use-create-todo-mutation";
 import { CreateTodoVariables } from "../graphql/typings/create-todo-variables";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 interface IEditTodoProps {
   isVisible: boolean
@@ -14,8 +15,32 @@ interface IEditTodoProps {
 
 export default function EditTodoView (props: IEditTodoProps)  {
   const header = props.data ? 'Edit Task' : 'Add Task';
-  const [title, setTitle] = useState(props.data?.title || '');
   const createTodo = useCreateTodoMutation();
+  const [title, setTitle] = useState(props.data?.title || '');
+  const [color, setColor] = useState('#fff');
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [date, setDate] = useState("");
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const confirmDate = (date: string | number | Date) => {
+    date = new Date(date).toDateString();
+    setDate(date);
+    setColor('#1E1A3C');
+    console.log("A date has been picked: ", date);
+    hideDatePicker();
+  };
+
+  const clearDate = () => {
+    setDate('');
+    setColor('#fff');
+  }
 
   const onSave = () => {
     if (title.trim().length === 0) {
@@ -34,7 +59,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
       const newData = {
         title,
         description: "",
-        dueDate: new Date()+"", // need to change
+        dueDate: date
       }
 
       try {
@@ -68,6 +93,28 @@ export default function EditTodoView (props: IEditTodoProps)  {
                                             text: 'black', 
                                             primary: '#1E1A3C'}}}
             />
+          <View style={styles.row}>
+            <IconButton icon='calendar'
+                        color={'#1E1A3C'}></IconButton>
+            <TouchableOpacity onPress={showDatePicker}>
+                <Text
+                  style={styles.text}>
+                  Assign A Due Date
+                </Text>
+              </TouchableOpacity>
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  onConfirm={confirmDate}
+                  onCancel={hideDatePicker}
+                />
+                <Text style={[styles.text, {textDecorationLine: 'none', marginLeft: 60}]}>{date}</Text>
+                <IconButton icon='close-circle-outline'
+                            style={styles.icon}
+                            size={18}
+                            color={color}
+                            onPress={clearDate}></IconButton>
+          </View>
         </View>
         <Button  
             style={styles.btn}
@@ -98,7 +145,6 @@ const styles = StyleSheet.create({
       width: '100%', 
       height: '100%',
       backgroundColor: '#fff',
-      flexDirection: 'column',
     },
     title: {
         fontSize: 25,
@@ -119,4 +165,19 @@ const styles = StyleSheet.create({
         margin: 15,
         backgroundColor: '#fff',
     },
+    text: {
+      margin: 14,
+      marginRight: 0,
+      marginLeft: 0,
+      textDecorationLine: 'underline',
+    },
+    row: {
+      flex: 1,
+      marginTop: 10,
+      flexDirection: 'row'
+    },
+    icon: {
+      marginTop: 8,
+      marginLeft: 0,
+    }
   });
