@@ -15,7 +15,7 @@ export class Todo {
   isCompleted: boolean;
 
   @Field()
-  dueDate: Date;
+  dueDate: string;
 
   @Field()
   userID: string;
@@ -25,11 +25,37 @@ export class Todo {
 @InputType()
 export class CreateTodo implements Partial<Todo> {
   @Field()
-  title: string
+  title: string;
 
   @Field({ nullable: true }) 
-  description?: string
+  description?: string;
 
   @Field()
-  dueDate: Date;
+  dueDate: string;
+}
+
+// Input type for deleting a todo
+@InputType()
+export class DeleteTodo implements Partial<Todo> {
+  @Field()
+  id: string;
+}
+
+// Input type for updating a todo
+@InputType()
+export class UpdateTodo implements Partial<Todo> {
+  @Field()
+  id: string;
+
+  @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field({ nullable: true })
+  dueDate?: string;
+
+  @Field({ nullable: true })
+  isCompleted?: boolean;
 }
