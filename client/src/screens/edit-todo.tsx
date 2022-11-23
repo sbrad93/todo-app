@@ -1,9 +1,10 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { Modal, StyleSheet, View, Text, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ITodo from "../models/todo";
 import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useCreateTodoMutation } from "../graphql/hooks/use-create-todo-mutation";
 import DatePicker from "../components/date-picker";
+import { useUpdateTodoContentMutation } from "../graphql/hooks/use-update-todo-content-mutation";
 
 interface IEditTodoProps {
   isVisible: boolean
@@ -16,47 +17,64 @@ export default function EditTodoView (props: IEditTodoProps)  {
   const header = props.data ? 'Edit Task' : 'Add Task';
   const submitText = props.data ? 'Update' : 'Save';
   const createTodo = useCreateTodoMutation();
-  const [title, setTitle] = useState(props.data?.title || '');
-  const [color, setColor] = useState('#fff');
+  const updateTodoContent = useUpdateTodoContentMutation();
+  const [title, setTitle] = useState('');
   const [date, setDate] = useState("");
   const [message, setMessage] = useState('');
 
   const save = () => {
     if (title.trim().length === 0) {
-      setMessage('Please title your task')
+      setMessage('Please title your task');
       return;
     }
 
-    if (props.data) {                                   // update todo
+    // update todo
+    if (props.data) {                                  
       const newData = {
         ...props.data,
-        title
+        title,
+        dueDate: date
       }
-      props.onSave();
-    } else {                                            // create new todo
+      try {
+        updateTodoContent(newData)
+          .then((response) => {
+            console.log(response);
+            props.onSave();
+            setDate('');
+            setTitle('');
+          });
+      } catch(err) {
+        throw (err)
+      };
+    }
+
+    // create new todo
+    else {                                        
       const newData = {
         title,
         description: "",
         dueDate: date
       }
-
       try {
         createTodo(newData)
           .then((response) => {
             console.log(response);
             props.onSave();
-            setColor('#fff'); 
             setDate('');
+            setTitle('');
           });
       } catch (err) {
         throw (err);
-      }
-    }
-    setTitle('');
-  }
+      };
+    };
+  };
 
   return (
     <Modal visible={props.isVisible} 
+            onShow={() => {if (props.data?.title) {
+                              setTitle(props.data?.title)
+                            }}}
+            onDismiss={() => {setTitle('')}}
             animationType="slide">
       <ScrollView>
         <KeyboardAvoidingView 
@@ -68,7 +86,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
                 label={"Title"}
                     style={styles.input}
                     onChangeText={setTitle}
-                    value={props.data?.title}
+                    value={title}
                     theme={{ colors: { placeholder: 'gray', 
                                             text: 'black', 
                                             primary: '#363478'}}}
@@ -87,7 +105,8 @@ export default function EditTodoView (props: IEditTodoProps)  {
             style={[styles.btn, { marginTop: 10 }]}
             mode="outlined" 
             color="#363478"
-            onPress={() => {props.onClose(); setDate(''); setColor('#fff');}}>
+            onPress={() => {props.onClose(); 
+                            setDate('');}}>
             Cancel
         </Button>
         </KeyboardAvoidingView>
@@ -97,7 +116,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
                 duration={1500}>{message}</Snackbar>
     </Modal>
   );
-}
+};
 
 const styles = StyleSheet.create({
     container: {

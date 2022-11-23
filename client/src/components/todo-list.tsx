@@ -5,7 +5,7 @@ import { IconButton, List } from 'react-native-paper';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { getTodosQuery } from "../graphql/hooks/use-get-todos-query";
 import { useDeleteTodoMutation } from '../graphql/hooks/use-delete-todo-mutation';
-import { useUpdateTodoMutation } from "../graphql/hooks/use-update-todo-status-mutation";
+import { useUpdateTodoStatusMutation } from "../graphql/hooks/use-update-todo-status-mutation";
 
 interface ITodoListProps {
   data: ITodo[] | undefined
@@ -16,7 +16,7 @@ export default function TodoList(props: ITodoListProps) {
   const {data, loading, error, refetch} = getTodosQuery();
   const [isLoading, setLoading] = useState(true);
   const deleteTodo = useDeleteTodoMutation();
-  const updateTodoStatus = useUpdateTodoMutation();
+  const updateTodoStatus = useUpdateTodoStatusMutation();
 
   useEffect(() => {
     refetch();
@@ -26,11 +26,20 @@ export default function TodoList(props: ITodoListProps) {
   const toggleCheck = (isChecked: boolean, id: string) => {
     try {
       updateTodoStatus({id: id, isCompleted: isChecked})
-        .then((response) => {
-          console.log(response);
-      });
+        .then(response => console.log(response));
     } catch (err) {
-      throw (err);
+        throw (err);
+    };
+  };
+
+  const deleteItem = (id: string) => {
+    try{
+      deleteTodo({
+        id: id
+      })
+        .then(response => console.log(response));
+      } catch(err) {
+          throw (err);
     };
   };
   
@@ -46,15 +55,7 @@ export default function TodoList(props: ITodoListProps) {
                                 icon='close-circle-outline'
                                 size={18}
                                 style={{ marginRight: 10 }}
-                                onPress={() => {
-                                  try{
-                                    deleteTodo({
-                                      id: item.id
-                                    })
-                                  } catch(err) {
-                                      throw (err);
-                                  }
-                                }}/>}
+                                onPress={() => {deleteItem(item.id)}}/>}
               left={props => <BouncyCheckbox
                                 fillColor="black"
                                 unfillColor="#FFFFFF"

@@ -24,11 +24,13 @@ export default function HomeScreen() {
   }
 
   const closeEditTodo = () => {
+      setTodo(undefined);
       setIsEditorVisible(false);
   }
 
   const saveTodo = () => {
     refetch();
+    setTodo(undefined);
     setIsEditorVisible(false);
   }
 
