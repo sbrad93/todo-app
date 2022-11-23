@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react"
-import { Modal, StyleSheet, View, Text, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from "react"
+import { Modal, StyleSheet, View, Text, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ITodo from "../models/todo";
-import { TextInput, Button, IconButton } from 'react-native-paper';
+import { TextInput, Button, Snackbar } from 'react-native-paper';
 import { useCreateTodoMutation } from "../graphql/hooks/use-create-todo-mutation";
-import { CreateTodoVariables } from "../graphql/typings/create-todo-variables";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DatePicker from "../components/date-picker";
 
 interface IEditTodoProps {
   isVisible: boolean
   onClose: () => void
-  onSave: (data: CreateTodoVariables) => void
+  onSave: () => void
   data?: ITodo
 }
 
@@ -18,34 +17,12 @@ export default function EditTodoView (props: IEditTodoProps)  {
   const createTodo = useCreateTodoMutation();
   const [title, setTitle] = useState(props.data?.title || '');
   const [color, setColor] = useState('#fff');
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState("");
+  const [message, setMessage] = useState('');
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const confirmDate = (date: string | number | Date) => {
-    date = new Date(date).toDateString();
-    setDate(date);
-    setColor('#363478');
-    console.log("A date has been picked: ", date);
-    hideDatePicker();
-  };
-
-  const clearDate = () => {
-    setDate('');
-    setColor('#fff');
-  }
-
-  const onSave = () => {
+  const save = () => {
     if (title.trim().length === 0) {
-      props.onClose();
-      setTitle('');
+      setMessage('Please title your task')
       return;
     }
 
@@ -54,7 +31,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
         ...props.data,
         title
       }
-      props.onSave(newData);
+      props.onSave();
     } else {                                            // create new todo
       const newData = {
         title,
@@ -64,19 +41,21 @@ export default function EditTodoView (props: IEditTodoProps)  {
 
       try {
         createTodo(newData)
-        .then((response) => {
-          console.log(response);
-          props.onSave(newData);
-        });
+          .then((response) => {
+            console.log(response);
+            props.onSave();
+            setColor('#fff'); 
+            setDate('');
+          });
       } catch (err) {
         throw (err);
       }
     }
+    setTitle('');
   }
 
   return (
     <Modal visible={props.isVisible} 
-            style={styles.modal} 
             animationType="slide">
       <ScrollView>
         <KeyboardAvoidingView 
@@ -93,53 +72,32 @@ export default function EditTodoView (props: IEditTodoProps)  {
                                             text: 'black', 
                                             primary: '#363478'}}}
             />
-          <View style={styles.row}>
-            <IconButton icon='calendar'
-                        color={'#363478'}></IconButton>
-            <TouchableOpacity onPress={showDatePicker}>
-                <Text
-                  style={styles.text}>
-                  Assign A Due Date
-                </Text>
-              </TouchableOpacity>
-                <DateTimePickerModal
-                  isVisible={isDatePickerVisible}
-                  mode="date"
-                  onConfirm={confirmDate}
-                  onCancel={hideDatePicker}
-                />
-                <Text style={[styles.text, {textDecorationLine: 'none', marginLeft: 60}]}>{date}</Text>
-                <IconButton icon='close-circle-outline'
-                            style={styles.icon}
-                            size={18}
-                            color={color}
-                            onPress={clearDate}></IconButton>
-          </View>
+            <DatePicker setDate={(date) => {setDate(date)}}></DatePicker>
         </View>
         <Button  
             style={styles.btn}
             mode="contained" 
             color="#363478"
-            onPress={onSave}>
+            onPress={() => {save()}}>
             Save
         </Button>
         <Button  
             style={[styles.btn, { marginTop: 10 }]}
             mode="outlined" 
             color="#363478"
-            onPress={() => props.onClose()}>
+            onPress={() => {props.onClose(); setDate(''); setColor('#fff');}}>
             Cancel
         </Button>
         </KeyboardAvoidingView>
       </ScrollView>
+      <Snackbar visible={message.length > 0} 
+                onDismiss={() => setMessage('')}
+                duration={1500}>{message}</Snackbar>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-    modal: {
-        backgroundColor: 'red'
-    },
     container: {
       flex: 1,
       width: '100%', 
@@ -164,20 +122,5 @@ const styles = StyleSheet.create({
         marginBottom: 0,
         margin: 15,
         backgroundColor: '#fff',
-    },
-    text: {
-      margin: 14,
-      marginRight: 0,
-      marginLeft: 0,
-      textDecorationLine: 'underline',
-    },
-    row: {
-      flex: 1,
-      marginTop: 10,
-      flexDirection: 'row'
-    },
-    icon: {
-      marginTop: 8,
-      marginLeft: 0,
     }
   });

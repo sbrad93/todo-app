@@ -5,6 +5,7 @@ import Menu from '../components/menu';
 import TodoList from '../components/todo-list';
 import EditTodoView from '../screens/edit-todo';
 import { getTodosQuery } from "../graphql/hooks/use-get-todos-query";
+
 export default function HomeScreen() {
   const [isEditTodoVisible, setIsEditorVisible] = useState(false);
   const {data, loading, error, refetch} = getTodosQuery();
@@ -34,7 +35,7 @@ export default function HomeScreen() {
         />
       </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       padding: 10,
       paddingBottom: 0,
-      marginBottom: 10,
+      marginBottom: 20,
       color: '#363478',
       textAlign: 'center'
     },

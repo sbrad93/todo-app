@@ -11,7 +11,7 @@ interface ITodoListProps {
   data: ITodo[] | undefined
 }
 
-const TodoList = (props: ITodoListProps) => {
+export default function TodoList(props: ITodoListProps) {
   const {data, loading, error, refetch} = getTodosQuery();
   const [isLoading, setLoading] = useState(true);
   const deleteTodo = useDeleteTodoMutation();
@@ -30,8 +30,8 @@ const TodoList = (props: ITodoListProps) => {
       });
     } catch (err) {
       throw (err);
-    }
-  }
+    };
+  };
   
   return (
     <FlatList 
@@ -43,14 +43,15 @@ const TodoList = (props: ITodoListProps) => {
               title={""}
               right={props => <IconButton 
                                 icon='close-circle-outline'
+                                size={18}
+                                style={{ marginRight: 10 }}
                                 onPress={() => {
                                   try{
-                                    console.log(item.id)
                                     deleteTodo({
                                       id: item.id
                                     })
                                   } catch(err) {
-                                    throw (err);
+                                      throw (err);
                                   }
                                 }}/>}
               left={props => <BouncyCheckbox
@@ -67,13 +68,13 @@ const TodoList = (props: ITodoListProps) => {
           onRefresh={refetch}
           refreshing={isLoading}/>
   );
-}
-export default TodoList;
+};
 
 const styles = StyleSheet.create({
   element: {
     padding: 0,
     paddingLeft: 5,
     marginLeft: 5,
+    marginBottom: 5
   },
 });
