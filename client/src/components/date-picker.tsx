@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import ITodo from "../models/todo";
 
 interface IDatePicker {
     setDate: (date: string) => void
+    data: ITodo | undefined
 }
 
 export default function DatePicker(props: IDatePicker) {
-    const [color, setColor] = useState('#fff');
+    const [color, setColor] = props.data?.dueDate ? useState('#363478') : useState('#fff');
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [date, setDate] = useState("");
+    const [date, setDate] =props.data?.dueDate ? useState(props.data?.dueDate) : useState('')
   
     const showDatePicker = () => {
       setDatePickerVisibility(true);

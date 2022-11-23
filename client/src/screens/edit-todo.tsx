@@ -14,6 +14,7 @@ interface IEditTodoProps {
 
 export default function EditTodoView (props: IEditTodoProps)  {
   const header = props.data ? 'Edit Task' : 'Add Task';
+  const submitText = props.data ? 'Update' : 'Save';
   const createTodo = useCreateTodoMutation();
   const [title, setTitle] = useState(props.data?.title || '');
   const [color, setColor] = useState('#fff');
@@ -72,14 +73,15 @@ export default function EditTodoView (props: IEditTodoProps)  {
                                             text: 'black', 
                                             primary: '#363478'}}}
             />
-            <DatePicker setDate={(date) => {setDate(date)}}></DatePicker>
+            <DatePicker setDate={(date) => {setDate(date)}}
+                        data={props.data}></DatePicker>
         </View>
         <Button  
             style={styles.btn}
             mode="contained" 
             color="#363478"
             onPress={() => {save()}}>
-            Save
+            {submitText}
         </Button>
         <Button  
             style={[styles.btn, { marginTop: 10 }]}

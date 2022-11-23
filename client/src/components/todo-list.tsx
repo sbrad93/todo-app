@@ -9,6 +9,7 @@ import { useUpdateTodoMutation } from "../graphql/hooks/use-update-todo-status-m
 
 interface ITodoListProps {
   data: ITodo[] | undefined
+  editTodo: (item: ITodo) => void
 }
 
 export default function TodoList(props: ITodoListProps) {
@@ -63,7 +64,7 @@ export default function TodoList(props: ITodoListProps) {
                                 isChecked={item.isCompleted}
                                 onPress={(isChecked: boolean) => {toggleCheck(isChecked, item.id)}}
                             />}
-              onPress={() => console.log("edit todo")}/>
+              onPress={() => {props.editTodo(item)}}/>
           )}
           onRefresh={refetch}
           refreshing={isLoading}/>
