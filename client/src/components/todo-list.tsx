@@ -50,7 +50,8 @@ export default function TodoList(props: ITodoListProps) {
             <List.Item 
               style={styles.element}
               key={item.id}
-              title={""}
+              title={item.dueDate ? "Due: " + item.dueDate : ''}
+              titleStyle={{color: '#B0b2b5', textAlign:'right'}}
               right={props => <IconButton 
                                 icon='close-circle-outline'
                                 size={18}
@@ -77,6 +78,6 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingLeft: 5,
     marginLeft: 5,
-    marginBottom: 5
+    marginBottom: 5,
   },
 });
