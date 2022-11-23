@@ -19,7 +19,8 @@ export default function EditTodoView (props: IEditTodoProps)  {
   const createTodo = useCreateTodoMutation();
   const updateTodoContent = useUpdateTodoContentMutation();
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState("");
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState('');
   const [message, setMessage] = useState('');
 
   const save = () => {
@@ -33,6 +34,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
       const newData = {
         ...props.data,
         title,
+        description,
         dueDate: date
       }
       try {
@@ -42,6 +44,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
             props.onSave();
             setDate('');
             setTitle('');
+            setDescription('')
           });
       } catch(err) {
         throw (err)
@@ -52,7 +55,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
     else {                                        
       const newData = {
         title,
-        description: "",
+        description,
         dueDate: date
       }
       try {
@@ -62,6 +65,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
             props.onSave();
             setDate('');
             setTitle('');
+            setDescription('');
           });
       } catch (err) {
         throw (err);
@@ -69,12 +73,30 @@ export default function EditTodoView (props: IEditTodoProps)  {
     };
   };
 
+  // set states to prop data when modal opened
+  const fetchData = (_title: string | undefined, _description: string | undefined, _date: string | undefined) => {
+    if (_title) {
+      setTitle(_title);
+    }
+    if (_description) {
+      setDescription(_description);
+    }
+    if (_date) {
+      setDate(_date);
+    }
+  };
+
+  // reset states after modal is closed
+  const clearData = () => {
+    setTitle('');
+    setDescription('');
+    setDate('');
+  }
+
   return (
     <Modal visible={props.isVisible} 
-            onShow={() => {if (props.data?.title) {
-                              setTitle(props.data?.title)
-                            }}}
-            onDismiss={() => {setTitle('')}}
+            onShow={() => {fetchData(props.data?.title, props.data?.description, props.data?.dueDate)}}
+            onDismiss={clearData}
             animationType="slide">
       <ScrollView>
         <KeyboardAvoidingView 
@@ -82,6 +104,7 @@ export default function EditTodoView (props: IEditTodoProps)  {
             behavior={"padding"}>
         <Text style={styles.title}>{header}</Text>
         <View>
+
             <TextInput
                 label={"Title"}
                     style={styles.input}
@@ -91,8 +114,23 @@ export default function EditTodoView (props: IEditTodoProps)  {
                                             text: 'black', 
                                             primary: '#363478'}}}
             />
+            <TextInput
+                placeholder={"Description"}
+                style={[styles.input, {height:150}]}
+                multiline={true}
+                scrollEnabled={true}
+                numberOfLines={100}
+                onChangeText={setDescription}
+                mode={'outlined'}
+                value={description}
+                theme={{ colors: { placeholder: 'gray', 
+                                        text: 'black', 
+                                        primary: '#363478'}}}
+            />
+
             <DatePicker setDate={(date) => {setDate(date)}}
                         data={props.data}></DatePicker>
+
         </View>
         <Button  
             style={styles.btn}
@@ -131,7 +169,6 @@ const styles = StyleSheet.create({
         padding: 20,
         paddingBottom: 0,
         marginTop: 55,
-        marginBottom: 10,
         color: '#363478',
     },
     btn: {
@@ -139,7 +176,7 @@ const styles = StyleSheet.create({
       marginBottom: 0
     },
     input: {
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 0,
         margin: 15,
         backgroundColor: '#fff',

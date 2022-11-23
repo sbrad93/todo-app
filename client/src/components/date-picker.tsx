@@ -12,7 +12,7 @@ interface IDatePicker {
 export default function DatePicker(props: IDatePicker) {
     const [color, setColor] = props.data?.dueDate ? useState('#363478') : useState('#fff');
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [date, setDate] =props.data?.dueDate ? useState(props.data?.dueDate) : useState('')
+    const [date, setDate] = props.data?.dueDate ? useState(props.data?.dueDate) : useState('')
   
     const showDatePicker = () => {
       setDatePickerVisibility(true);
@@ -32,6 +32,7 @@ export default function DatePicker(props: IDatePicker) {
   
     const clearDate = () => {
       setDate('');
+      props.setDate('');
       setColor('#fff');
     };
 

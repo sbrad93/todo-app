@@ -11,11 +11,12 @@ export const useUpdateTodoContentMutation = () => {
     });
 
     return useCallback(
-        ({id, title, dueDate}: UpdateTodoContentVariables) => {
+        ({id, title, description, dueDate}: UpdateTodoContentVariables) => {
             return updateTodo({
                 variables: {
                     id,
                     title,
+                    description,
                     dueDate
                 }
             });

@@ -61,7 +61,7 @@ export class TodoResolver {
       if (title) {
         todo.title = title;
       }
-      if (description) {
+      if (description != null) {
         todo.description = description;
       }
       if (dueDate != null) {
